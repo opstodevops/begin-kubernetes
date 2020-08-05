@@ -58,8 +58,8 @@ sudo yum remove -y docker \
 ```
 ############################################################
 
-### Installing Dependencies
-### Needed Prerequesites will be set up here
+### Installing and Configuring Docker
+
 ```
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
