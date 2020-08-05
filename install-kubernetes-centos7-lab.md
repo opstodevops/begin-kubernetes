@@ -98,9 +98,9 @@ sudo systemctl start kubelet
 
 ### Step 3: To give a unique hostname to master and worker nodes:
 ```
-sudo hostnamectl set-hostname master-node
+sudo hostnamectl set-hostname <master-node>
 
-sudo hostnamectl set-hostname worker-node1
+sudo hostnamectl set-hostname <worker-node1>
 ```
 
 #### Make a host entry or DNS record to resolve the hostname for all nodes:
@@ -125,7 +125,7 @@ sudo firewall-cmd --permanent --add-port=10255/tcp
 sudo firewall-cmd --reload
 ```
 
-### Enter the following commands on each worker node:
+#### Enter the following commands on each worker node:
 ```
 sudo firewall-cmd --permanent --add-port=10251/tcp
 sudo firewall-cmd --permanent --add-port=10255/tcp
@@ -165,26 +165,34 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 ```
 
 ### Step 9: Manage Cluster (Regular User)
+
+#### To start using your cluster, you need to run the following as a regular user:
 ```
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
+### Step 11: Configure Persistent Networking (Master & Worker Nodes)
+```
+echo "net.bridge.bridge-nf-call-iptables=1" | tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
 
-### Step 10: Installing Flannel for Pod Network (Master Node Only)
+### Step 12: Installing Flannel for Pod Network (Master Node Only)
 ```
-sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+sudo kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
 ```
-### Step 11: Join Worker Node to Cluster
+### Step 13: Join Worker Node to Cluster
 ```
-kubeadm join --discovery-token cfgrty.1234567890jyrfgd --discovery-token-ca-cert-hash sha256:1234..cdef 1.2.3.4:6443
+kubeadm join 172.31.36.85:6443 --token a78p2j.dyc856yrbt6f9qb1 \
+    --discovery-token-ca-cert-hash sha256:95010b8788167f9dd087dd3ad72eaaeff6e7520878028ca79f6e8f8c0c76d9c7
 ```
 #### OR 
 ```
 kubeadm join --token <token> <IP>:6443
 ```
 
-### Step 12: Checking Cluster Status
+### Step 14: Checking Cluster Status
 ```
 [root@master ~]# kubectl get pods --all-namespaces
 NAMESPACE     NAME                             READY   STATUS    RESTARTS   AGE
@@ -223,13 +231,13 @@ data-2   Ready    <none>   6h2m   v1.18.6
 master   Ready    master   6h6m   v1.18.6
 ```
 
-### Step 13: Check Cluster (Wider Output)
+### Step 15: Check Cluster (Wider Output)
 ```
 sudo kubectl get nodes -o wide
 
 sudo kubectl get pods --all-namespaces -o wide
 ```
-### Step 14: Start the cluster as a normal user (Optional)
+### Step 16: Start the cluster as a normal user (Optional)
 ```
 sudo cp /etc/kubernetes/admin.conf $HOME/
 sudo chown $(id -u):$(id -g) $HOME/admin.conf
