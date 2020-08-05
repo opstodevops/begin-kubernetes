@@ -103,12 +103,14 @@ sudo hostnamectl set-hostname <master-node>
 sudo hostnamectl set-hostname <worker-node1>
 ```
 
-#### Make a host entry or DNS record to resolve the hostname for all nodes:
+#### Make a host entry or DNS record to resolve the hostname for all nodes.
+
+#### Building this lab in AWS requires Security Group to allow traffic
 ```
 sudo vi /etc/hosts
 
-192.168.1.10 master.opstodevops.tech master-node
-192.168.1.20 node1.opstodevops.tech worker-node
+172.31.36.85    ip-172-31-36-85.ec2.internal master-node
+172.31.36.15    ip-172-31-36-15.ec2.internal worker-node1
 ```
 ############################################################
 
