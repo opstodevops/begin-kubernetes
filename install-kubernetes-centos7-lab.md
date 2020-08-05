@@ -91,14 +91,12 @@ EOF
 sudo yum install -y kubelet \
 		kubeadm \
 		kubectl
-
-systemctl enable kubelet
-
-systemctl start kubelet
+sudo systemctl enable kubelet
+sudo systemctl start kubelet
 ```
 ############################################################
 
-### Step 3: To give a unique hostname to master and worked nodes:
+### Step 3: To give a unique hostname to master and worker nodes:
 ```
 sudo hostnamectl set-hostname master-node
 
@@ -148,7 +146,7 @@ sysctl --system
 ### Step 6: Disable SELinux
 ```
 sudo setenforce 0
-sudo sed -i ‘s/^SELINUX=enforcing$/SELINUX=permissive/’ /etc/selinux/config
+sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 ```
 ############################################################
 
@@ -163,7 +161,7 @@ sudo swapoff -a
 
 #### Initialize a cluster by executing:
 ```
-sudo kubeadm init –pod-network-cidr=10.244.0.0/16
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 ```
 
 ### Step 9: Manage Cluster (Regular User)
