@@ -4,14 +4,14 @@
 #!/bin/bash
 
 # CentOS K8 Prep
-# Script to prepare CentOS for installing Kubernetes
+# Commands to prepare CentOS for installing Kubernetes
 #
 # OpsToDevOps
 # https://opstodevops.tech
 # Twitter = @opst0devops
 ```
-##############################################################################################################
-
+############################################################
+```
 f_banner(){
 echo
 echo "
@@ -25,14 +25,13 @@ echo
 echo
 
 }
-
-##############################################################################################################
+```
+############################################################
 
 ### Check if running with root User
 ```
 clear
 f_banner
-
 
 check_root() {
 if [ "$USER" != "root" ]; then
@@ -47,7 +46,7 @@ else
 fi
 }
 ```
-##############################################################################################################
+############################################################
 
 ### Remove any old versions of Docker if they exist
 
@@ -57,10 +56,10 @@ sudo yum remove -y docker \
 		docker-selinux \
 		docker-engine
 ```
-##############################################################################################################
+############################################################
 
-# Installing Dependencies
-# Needed Prerequesites will be set up here
+### Installing Dependencies
+### Needed Prerequesites will be set up here
 ```
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -71,7 +70,7 @@ sudo systemctl enable docker
 sudo systemctl start docker
 sudo usermod -aG docker $(whoami)
 ```
-##############################################################################################################
+############################################################
 
 #sudo yum install -y yum-utils
 #sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -80,7 +79,7 @@ sudo usermod -aG docker $(whoami)
 #sudo systemctl start docker
 #sudo usermod -aG docker $(whoami)
 
-##############################################################################################################
+############################################################
 
 ### Step 1: Configure Kubernetes Repository
 ```
@@ -94,7 +93,7 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
 ```
-##############################################################################################################
+############################################################
 
 ### Step 2: Install kubelet, kubeadm, and kubectl
 ```
@@ -106,7 +105,7 @@ systemctl enable kubelet
 
 systemctl start kubelet
 ```
-##############################################################################################################
+############################################################
 
 ### Step 3: To give a unique hostname to master and worked nodes:
 ```
@@ -115,19 +114,19 @@ sudo hostnamectl set-hostname master-node
 sudo hostnamectl set-hostname worker-node1
 ```
 
-### Make a host entry or DNS record to resolve the hostname for all nodes:
+#### Make a host entry or DNS record to resolve the hostname for all nodes:
 ```
 sudo vi /etc/hosts
 
 192.168.1.10 master.opstodevops.tech master-node
 192.168.1.20 node1.opstodevops.tech worker-node
 ```
-##############################################################################################################
+############################################################
 
 ### Step 4: Configure Firewall (Optional)
-```
-On the Master Node enter:
 
+#### On the Master Node enter:
+```
 sudo firewall-cmd --permanent --add-port=6443/tcp
 sudo firewall-cmd --permanent --add-port=2379-2380/tcp
 sudo firewall-cmd --permanent --add-port=10250/tcp
@@ -143,7 +142,7 @@ sudo firewall-cmd --permanent --add-port=10251/tcp
 sudo firewall-cmd --permanent --add-port=10255/tcp
 firewall-cmd --reload
 ```
-##############################################################################################################
+############################################################
 
 ### Step 5. Update Iptables (Optional)
 ```
@@ -153,21 +152,21 @@ net.bridge.bridge-nf-call-iptables = 1
 EOF
 sysctl --system
 ```
-##############################################################################################################
+############################################################
 
 ### Step 6: Disable SELinux
 ```
 sudo setenforce 0
 sudo sed -i ‘s/^SELINUX=enforcing$/SELINUX=permissive/’ /etc/selinux/config
 ```
-##############################################################################################################
+############################################################
 
 ### Step 7: Disable SWAP
 ```
 sudo sed -i '/swap/d' /etc/fstab
 sudo swapoff -a
 ```
-##############################################################################################################
+############################################################
 
 ### Step 8: Create Cluster with kubeadm
 
@@ -191,7 +190,7 @@ sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Do
 ```
 kubeadm join --discovery-token cfgrty.1234567890jyrfgd --discovery-token-ca-cert-hash sha256:1234..cdef 1.2.3.4:6443
 ```
-### OR 
+#### OR 
 ```
 kubeadm join --token <token> <IP>:6443
 ```
@@ -247,5 +246,3 @@ sudo cp /etc/kubernetes/admin.conf $HOME/
 sudo chown $(id -u):$(id -g) $HOME/admin.conf
 export KUBECONFIG=$HOME/admin.conf
 ```
-
-
