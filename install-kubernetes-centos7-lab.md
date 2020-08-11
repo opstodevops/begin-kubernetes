@@ -239,9 +239,3 @@ sudo kubectl get nodes -o wide
 
 sudo kubectl get pods --all-namespaces -o wide
 ```
-### Step 16: Start the cluster as a normal user (Optional)
-```
-sudo cp /etc/kubernetes/admin.conf $HOME/
-sudo chown $(id -u):$(id -g) $HOME/admin.conf
-export KUBECONFIG=$HOME/admin.conf
-```

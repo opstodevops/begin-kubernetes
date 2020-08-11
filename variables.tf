@@ -21,7 +21,7 @@ variable "key_name" {
 }
 
 variable "private_key_path" {
-  default = "/home/cloud_user/tf-kubernetes-dev/stage-dev/kubernetes-key.pem"
+  default = "./kubernetes-key.pem"
 }
 
 variable "master_node_names" {
@@ -70,51 +70,4 @@ variable "image_type" {
     # Repo = "https://github.com/opstodevops/terraform-ansible-k8s"
     # Terraform = true
   # }
-# }
-
-# variable "ssh_keys" {}
-
-# variable "image" {
-#     description = "The AWS AMI"
-#     default = "ubuntu-18-04-x64"
-# }
-
-# variable "name" {
-#     description = "The name of the AMI"
-#     default = "nginx"
-# }
-
-# variable "region" {
-#     description = "The region for the AMI"
-#     default = "us-east-1"
-# }
-
-# variable "size" {
-#     description = "The instance size"
-#     default = "1gb"
-# }
-
-# variable "with_backups" {
-#     description = "Boolean controlling if backups are made"
-#     default = false
-# }
-
-# variable "with_monitoring" {
-#     description = "Boolean controlling whether monitoring agent is installed"
-#     default = false
-# }
-
-# variable "with_ipv6" {
-#     description = "Boolean controlling if IPv6 is enabled"
-#     default = false
-# }
-
-# variable "with_private_networking" {
-#     description = "Boolean controlling if private networks are enabled"
-#     default = false
-# }
-
-# variable "with_resize_disk" {
-#     description = "Whether to increase the disk size when resizing a Droplet"
-#     default = true
 # }

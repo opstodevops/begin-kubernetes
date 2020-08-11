@@ -1,6 +1,6 @@
-##################################################################################
+#############################################################################
 # PROVIDERS
-##################################################################################
+#############################################################################
 
 provider "aws" {
   access_key = var.aws_access_key
@@ -10,9 +10,9 @@ provider "aws" {
   profile    = "default"
 }
 
-##################################################################################
+#############################################################################
 # DATA SOURCES
-##################################################################################
+#############################################################################
 
 data "aws_availability_zones" "azs" {}
 
@@ -49,18 +49,18 @@ data "aws_ami" "centos-linux" {
   }
 }
 
-##################################################################################
+#############################################################################
 # LOCAL
-##################################################################################
+#############################################################################
 
 # the default username for AMI
 locals {
   vm_user = "ubuntu"
 }
 
-##################################################################################
+#############################################################################
 # RESOURCES
-##################################################################################
+#############################################################################
 
 #This uses the default VPC.  It WILL NOT delete it on destroy.
 resource "aws_default_vpc" "default" {
@@ -248,10 +248,7 @@ resource "aws_instance" "master_node" {
   }
 
   provisioner "local-exec" {
-    [for master in aws_instance.master_node:
-    # command = "sleep 120; ansible-playbook -i '${aws_instance.master_node.*.public_ip}' k8s-playbook.yml"
-    command = "sleep 120; ansible-playbook -i '${aws_instance.master_node.public_ip}' k8s-playbook.yml"
-    ]
+    command = "sleep 60; ansible-playbook -i '${self.public_ip}', k8s-playbook.yml"
   }
 
   tags = {
@@ -259,6 +256,17 @@ resource "aws_instance" "master_node" {
     Environment = "${terraform.workspace}"
   }
 }
+
+#############################################################################
+# This is the 'null resource' method.  
+# Ansible runs on the target host outside of aws_instance block.
+#############################################################################
+
+# resource "null_resource" "ansible" {
+#  provisioner "local-exec" {
+#     command = "sleep 120; ansible-playbook -i inventory --limit '${join(" ",aws_instance.master_node.*.public_ip)}' k8s-playbook.yml"
+#  }
+# }
 
 resource "aws_security_group" "worker_node_rules" {
   name        = "worker_node_rules-${terraform.workspace}"
@@ -323,6 +331,10 @@ resource "aws_instance" "worker_nodes" {
   # force Terraform to wait until a connection is made, prevent Ansible from failing when trying to provision
   provisioner "remote-exec" {
     inline = ["echo Successfully connected"]
+  }
+
+  provisioner "local-exec" {
+    command = "sleep 60; ansible-playbook -i '${self.public_ip}', k8s-playbook.yml"
   }
 
   tags = {
