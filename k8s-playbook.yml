@@ -1,0 +1,19 @@
+---
+  - name: Install NGINX on Linux
+    hosts: all
+    gather_facts: false
+    become_method: sudo
+
+    tasks:
+    - name: install nginx
+      package:
+        name:
+          - nginx
+        state: latest
+      become: yes
+
+    - name: start nginx service
+      service:
+          name: nginx
+          state: started
+      become: yes
